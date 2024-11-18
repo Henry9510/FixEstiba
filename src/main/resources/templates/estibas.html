@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/estilos.css">
+    <title>Desarme de Estibas - FixEstibas</title>
+</head>
+<body>
+<header>
+    <h1>Desarme de Estibas</h1>
+    <nav>
+        <ul>
+            <li><a href="/templates/index">Inicio</a></li>
+            <li><a href="/templates/estibas">Desarme de Estibas</a></li>
+            <li><a href="/templates/usuarios">Nuevo Usuario</a></li>
+            <li><a href="/templates/logout">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="main-content">
+    <h2>Seleccione el Tipo de Estiba para Desarme</h2>
+    <div class="estibas-seleccion">
+        <div class="estiba" onclick="seleccionarEstiba('Grande')">
+            <img src="/estiba.jpg" style="width: 200px;">
+            <p>GRANDE 1.30m x 1.30m</p>
+        </div>
+        <div class="estiba" onclick="seleccionarEstiba('Mediana')">
+            <img src="/estiba.jpg" style="width: 200px;">
+            <p>MEDIANA 1.05m x 1.05m</p>
+        </div>
+        <div class="estiba" onclick="seleccionarEstiba('Pequeña')">
+            <img src="/estiba.jpg" style="width: 200px;">
+            <p>PEQUEÑA 90cm x 90cm</p>
+        </div>
+    </div>
+
+    <form id="estibaForm" onsubmit="guardarEstiba(); return false;">
+        <label id="tipoEstibaSeleccionada">Tipo de Estiba Seleccionada:</label><br>
+
+        <label>Cantidad de Tablas:</label>
+        <input type="number" id="cantidadTablas" required><br>
+
+        <label>Cantidad de Tacos:</label>
+        <input type="number" id="cantidadTacos" required><br>
+
+        <button type="submit">Guardar</button>
+    </form>
+</div>
+
+<script src="/static/js/desarme.js"></script>
+</body>
+</html>

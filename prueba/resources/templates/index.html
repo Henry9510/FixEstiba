@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/prueba/resources/static/estilos.css">
+    <title>Crear Usuario - FixEstibas</title>
+</head>
+<body>
+<header>
+    <h1>Registro de Nuevo Usuario</h1>
+    <nav>
+        <ul>
+            <li><a href="/prueba/resources/templates/index.html">Inicio</a></li>
+            <li><a href="/prueba/resources/templates/estibas.html">Desarme de Estibas</a></li>
+            <li><a href="/prueba/resources/templates/usuarios.html">Nuevo Usuario</a></li>
+            <li><a href="">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="dashboard-content">
+    <h2>Cantidad de Tablas y Tacos Disponibles</h2>
+    <div>
+        <p>Tablas Disponibles: <span th:text="${cantidadTablas}">0</span></p>
+        <p>Tacos Disponibles: <span th:text="${cantidadTacos}">0</span></p>
+    </div>
+</div>
+
+<script th:src="@{/js/dashboard.js}"></script>
+</body>
+</html>

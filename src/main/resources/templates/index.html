@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/estilos.css">
+    <title></title>
+</head>
+<style>
+    .estiba {
+        margin: 10px;
+        text-align: center;
+        cursor: pointer;
+    }
+
+
+    .estibas-lista {
+        margin-top: 20px;
+    }
+
+    .estibas-seleccion{
+        display: flex;
+        flex-direction: row;
+    }
+
+    /* Reset y estilo básico */
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    .logo{
+        display: flex;
+        flex-direction: row;
+        align-content: center;
+        align-items: center;
+    }
+
+    body {
+        font-family: Arial, sans-serif;
+        display: flex;
+        min-height: 100vh;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    /* Estilos del Header */
+    header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 10px 20px;
+        background-color: #978342;
+        color: #fff;
+        width: 100%;
+    }
+
+    header .logo {
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    nav ul {
+        list-style: none;
+        display: flex;
+        gap: 15px;
+    }
+
+    nav ul li {
+        position: relative;
+    }
+
+    nav ul li a {
+        color: #fff;
+        text-decoration: none;
+        padding: 8px 12px;
+    }
+
+    nav ul li a:hover {
+        background-color: #555;
+    }
+
+    /* Lista desplegable */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: #333;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+
+    .dropdown-content a {
+        padding: 10px;
+        display: block;
+        color: white;
+        text-decoration: none;
+    }
+
+    .dropdown-content a:hover {
+        background-color: #555;
+    }
+
+    nav ul li:hover .dropdown-content {
+        display: block;
+    }
+
+    /* Estilos del contenedor principal */
+    .main-content {
+        width: 70%; /* El contenido ocupa el 70% del ancho de la pantalla */
+        max-width: 1200px;
+        padding: 20px;
+        margin: 20px 0;
+        background-color: #f9f9f9;
+        border: 1px solid #ddd;
+        box-shadow: 0px 4px 8px rgba(0,0,0,0.1);
+        align-content: center;
+    }
+
+    /* Estilos del footer */
+    footer {
+        width: 100%;
+        background-color: #333;
+        color: white;
+        text-align: center;
+        padding: 10px;
+    }
+
+</style>
+<body>
+<header>
+    <div class="logo">
+        <img src="/logo.png" style="width: 100px; padding: 0"><h1> FixEstibas</h1>
+    </div>
+
+    <nav>
+        <ul>
+            <li><a href="/index">Inicio</a></li>
+            <li><a href="/estibas">Desarme de Estibas</a></li>
+            <li><a href="/usuarios">Nuevo Usuario</a></li>
+            <li><a href="">Cerrar sesión</a></li>
+        </ul>
+    </nav>
+</header>
+
+<div class="container mt-5">
+    <div class="row">
+        <!-- Cuadro para Tablas Grande -->
+        <div class="col-md-3">
+            <div class="card text-white bg-primary mb-3">
+                <div class="card-header">Tablas Grandes</div>
+                <div class="card-body">
+                    <h5 class="card-title" id="totalesGrandeTablas">Cargando...</h5>
+                </div>
+            </div>
+        </div>
+        <!-- Cuadro para Tablas Medianas -->
+        <div class="col-md-3"   >
+            <div class="card text-white bg-success mb-3">
+                <div class="card-header">Tablas Medianas</div>
+                <div class="card-body">
+                    <h5 class="card-title" id="totalesMedianaTablas">Cargando...</h5>
+                </div>
+            </div>
+        </div>
+        <!-- Cuadro para Tablas Pequeñas -->
+        <div class="col-md-3">
+            <div class="card text-white bg-warning mb-3">
+                <div class="card-header">Tablas Pequeñas</div>
+                <div class="card-body">
+                    <h5 class="card-title" id="totalesPequenaTablas">Cargando...</h5>
+                </div>
+            </div>
+        </div>
+        <!-- Cuadro para Total de Tacos -->
+        <div class="col-md-3">
+            <div class="card text-white bg-danger mb-3">
+                <div class="card-header">Total Tacos</div>
+                <div class="card-body">
+                    <h5 class="card-title" id="totalesTacos">Cargando...</h5>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<script src="/estibasDia.js"></script> <!-- En la página de login -->
+</body>
+</html>

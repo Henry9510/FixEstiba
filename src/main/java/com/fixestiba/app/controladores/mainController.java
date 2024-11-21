@@ -1,34 +1,27 @@
 package com.fixestiba.app.controladores;
 
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
 
-public class mainController
-{
+@Controller
+public class mainController {
     @GetMapping("/index")
     public String index() {
-        return "index"; // Thymeleaf busca index.html en templates
+        return "index"; // Thymeleaf buscará index.html en la carpeta templates
     }
 
     @GetMapping("/usuarios")
     public String usuarios() {
-        return "usuarios"; // Thymeleaf busca usuarios.html en templates
+        return "usuarios"; // Thymeleaf buscará usuarios.html en la carpeta templates
     }
-
 
     @GetMapping("/estibas")
     public String estibas() {
-        return "estibas"; // Debe corresponder a index.html en templates
+        return "estibas"; // Thymeleaf buscará estibas.html en la carpeta templates
     }
+
     @GetMapping("/login")
     public String login() {
-        return "login"; // Debe corresponder a index.html en templates
+        return "login"; // Thymeleaf buscará login.html en la carpeta templates
     }
-
-    @GetMapping("/listar-estibas")
-    public String listarEstibas() {
-        return "listar-estibas"; // Debe corresponder a index.html en templates
-    }
-
-
 }

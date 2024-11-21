@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,19 +8,24 @@
 </head>
 <body>
 <header>
-    <h1>Desarme de Estibas</h1>
+    <div class="logo">
+        <img src="/logo.png" style="width: 100px; padding: 0"><h1> FixEstibas</h1>
+    </div>
+
     <nav>
         <ul>
-            <li><a href="/templates/index">Inicio</a></li>
-            <li><a href="/templates/estibas">Desarme de Estibas</a></li>
-            <li><a href="/templates/usuarios">Nuevo Usuario</a></li>
-            <li><a href="/templates/logout">Cerrar sesión</a></li>
+            <li><a href="/index">Inicio</a></li>
+            <li><a href="/estibas">Desarme de Estibas</a></li>
+            <li><a href="/usuarios">Nuevo Usuario</a></li>
+            <li><a href="">Cerrar sesión</a></li>
         </ul>
     </nav>
 </header>
 
 <div class="main-content">
     <h2>Seleccione el Tipo de Estiba para Desarme</h2>
+    <label>Fecha:</label>
+    <input type="date" id="fecha" required><br>
     <div class="estibas-seleccion">
         <div class="estiba" onclick="seleccionarEstiba('Grande')">
             <img src="/estiba.jpg" style="width: 200px;">
@@ -39,6 +44,8 @@
     <form id="estibaForm" onsubmit="guardarEstiba(); return false;">
         <label id="tipoEstibaSeleccionada">Tipo de Estiba Seleccionada:</label><br>
 
+
+
         <label>Cantidad de Tablas:</label>
         <input type="number" id="cantidadTablas" required><br>
 
@@ -48,7 +55,6 @@
         <button type="submit">Guardar</button>
     </form>
 </div>
-
-<script src="/static/js/desarme.js"></script>
+<script src="/app.js"></script> <!-- En la página de login -->
 </body>
 </html>

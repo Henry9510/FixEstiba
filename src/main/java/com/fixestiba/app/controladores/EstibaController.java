@@ -1,7 +1,5 @@
 package com.fixestiba.app.controladores;
 
-
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -12,28 +10,35 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fixestiba.app.modelos.Estiba;
-import com.fixestiba.app.serivicios.EstibaService;
+import com.fixestiba.app.repositorios.EstibaRepository;
 
+import java.time.LocalDate;
 
 @RestController
-@CrossOrigin(origins = "*") 
+@CrossOrigin(origins = "*")
 @RequestMapping("/api/estibas")
 public class EstibaController {
 
-  
     @Autowired
-    private EstibaService estibaService;
+    private EstibaRepository estibaRepository;
 
     @PostMapping("/crear")
     public Estiba crearEstiba(@RequestBody Estiba estiba) {
-        return estibaService.crearEstiba(estiba);
+        return estibaRepository.save(estiba);
     }
 
+
     @GetMapping("/totales/{tipoEstiba}")
-    public int[] obtenerTotalesPorTipo(@PathVariable String tipoEstiba) {
-        int totalTablas = estibaService.obtenerTotalTablasPorTipo(tipoEstiba);
-        int totalTacos = estibaService.obtenerTotalTacosPorTipo(tipoEstiba);
+    public int[] obtenerTotalesPorTipoHoy(@PathVariable String tipoEstiba) {
+        // Obtiene la fecha actual
+        LocalDate fechaHoy = LocalDate.now();
+
+        // Filtra las tablas y tacos por tipo y fecha
+        int totalTablas = estibaRepository.sumarTablasPorTipoYFecha(tipoEstiba, fechaHoy);
+        int totalTacos = estibaRepository.sumarTacosPorTipoYFecha(tipoEstiba, fechaHoy);
+
+        // Retorna un array con los totales
         return new int[]{totalTablas, totalTacos};
     }
-    
+
 }

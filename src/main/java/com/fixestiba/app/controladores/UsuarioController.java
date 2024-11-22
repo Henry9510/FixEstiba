@@ -6,7 +6,10 @@ import java.util.Optional;
 
 import com.fixestiba.app.modelos.Usuarios;
 import com.fixestiba.app.repositorios.UsuarioRepository;
+import com.fixestiba.app.serivicios.interfaces.Usuariosint;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
+
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
@@ -14,86 +17,80 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
+@RequestMapping("/api/usuario")
+@CrossOrigin(origins = "http://127.0.0.1:5500") // Configuración global para este controlador
 public class UsuarioController {
     private final UsuarioRepository repositorio;
+    private final Usuariosint Servicio;
 
-    public UsuarioController(UsuarioRepository repositorio) {
+    public UsuarioController(UsuarioRepository repositorio, Usuariosint Servicio) {
         this.repositorio = repositorio;
+        this.Servicio = Servicio;
     }
 
-    @CrossOrigin(origins = "http://127.0.0.1:5500")
-    @GetMapping("/api/empleado")
-    public List<Usuarios> obtenerEmpleados() {
+    @GetMapping
+    public List<Usuarios> obtenerUsuarios() {
         return repositorio.findAll();
     }
 
-
-
-    @CrossOrigin(origins = "*")
-    @GetMapping("/api/empleado/{id}")
-    public ResponseEntity<Usuarios> obtenerEmpleado(@PathVariable Long id) {
-        Optional<Usuarios> opt = repositorio.findById(id);
-        return opt.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+    @GetMapping("/{id}")
+    public ResponseEntity<Usuarios> obtenerUsuario(@PathVariable Long id) {
+        return repositorio.findById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
     }
 
-    @PostMapping("/api/empleado")
-    public ResponseEntity<?> guardarEmpleado(@RequestBody Usuarios empleado) {
-        Usuarios savedEmpleado = repositorio.save(empleado);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedEmpleado);
-
-
+    @PostMapping
+    public ResponseEntity<Usuarios> guardarUsuario(@RequestBody Usuarios usuario) {
+        Usuarios savedUsuario = repositorio.save(usuario);
+        return ResponseEntity.status(HttpStatus.CREATED).body(savedUsuario);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<Usuarios> actualizarUsuario(@PathVariable Long id, @RequestBody Usuarios usuarioActualizado) {
+        return repositorio.findById(id)
+                .map(existingUsuario -> {
+                    existingUsuario.setNombre(usuarioActualizado.getNombre());
+                    existingUsuario.setSegundo_nombre(usuarioActualizado.getSegundo_nombre());
+                    existingUsuario.setApellido(usuarioActualizado.getApellido());
+                    existingUsuario.setSegundo_apellido(usuarioActualizado.getSegundo_apellido());
+                    existingUsuario.setEdad(usuarioActualizado.getEdad());
+                    existingUsuario.setSexo(usuarioActualizado.getSexo());
+                    existingUsuario.setDireccion(usuarioActualizado.getDireccion());
+                    existingUsuario.setEmail(usuarioActualizado.getEmail());
+                    existingUsuario.setContrasenia(usuarioActualizado.getContrasenia());
+                    existingUsuario.setCelular(usuarioActualizado.getCelular());
+                    existingUsuario.setFecha_ingreso(usuarioActualizado.getFecha_ingreso());
+                    return ResponseEntity.ok(repositorio.save(existingUsuario));
+                })
+                .orElse(ResponseEntity.notFound().build());
+    }
 
-
-    @PutMapping("/api/empleado/{id}")
-    @CrossOrigin(origins = "http://127.0.0.1:5500")
-    public ResponseEntity<Usuarios> actualizarEmpleado(@PathVariable Long id, @RequestBody Usuarios empleadoActualizado) {
-        // Verificar si el empleado existe
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> borrarUsuario(@PathVariable Long id) {
         if (!repositorio.existsById(id)) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // Obtener el empleado existente
-        Usuarios existingEmpleado = repositorio.findById(id).orElse(null);
-
-        if (existingEmpleado == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        // Actualizar el empleado existente con los nuevos valores
-        existingEmpleado.setNombre(empleadoActualizado.getNombre());
-        existingEmpleado.setSegundo_nombre(empleadoActualizado.getSegundo_nombre());
-        existingEmpleado.setApellido(empleadoActualizado.getApellido());
-        existingEmpleado.setSegundo_apellido(empleadoActualizado.getSegundo_apellido());
-        existingEmpleado.setEdad(empleadoActualizado.getEdad());
-        existingEmpleado.setSexo(empleadoActualizado.getSexo());
-        existingEmpleado.setTelefono(empleadoActualizado.getTelefono());
-        existingEmpleado.setDireccion(empleadoActualizado.getDireccion());
-        existingEmpleado.setEmail(empleadoActualizado.getEmail());
-        existingEmpleado.setContrasenia(empleadoActualizado.getContrasenia());
-        existingEmpleado.setCelular(empleadoActualizado.getCelular());
-        existingEmpleado.setFecha_ingreso(empleadoActualizado.getFecha_ingreso());
-        existingEmpleado.setCargo(empleadoActualizado.getCargo());
-
-        // Guardar los cambios en la base de datos
-        Usuarios updatedEmpleado = repositorio.save(existingEmpleado);
-
-        return ResponseEntity.ok(updatedEmpleado);
-    }
-
-
-    @DeleteMapping("/api/empleado/{id}")
-    @CrossOrigin(origins = "http://127.0.0.1:5500")
-    public ResponseEntity<Void> borrarEmpleado(@PathVariable Long id) {
-        if (id == null || !repositorio.existsById(id)) {
             return ResponseEntity.badRequest().build();
         }
-
         repositorio.deleteById(id);
         return ResponseEntity.noContent().build();
     }
 
+    @PatchMapping("/login")
+    public ResponseEntity<?> loginUsuario(@RequestBody Usuarios usuario) {
+        try {
+            Optional<Usuarios> resultado = Servicio.login(usuario.getUsuario(), usuario.getContrasenia());
+            if (resultado.isPresent()) {
+                return ResponseEntity.ok(resultado.get());
+            }
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña incorrectos");
+        } catch (NullPointerException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de datos nulos: " + e.getMessage());
+        } catch (DataAccessException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de acceso a la base de datos: " + e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error en el servidor: " + e.getMessage());
+        }
+    }
 }
 
 

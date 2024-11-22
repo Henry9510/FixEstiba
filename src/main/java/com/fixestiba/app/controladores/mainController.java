@@ -1,10 +1,22 @@
 package com.fixestiba.app.controladores;
 
+import com.fixestiba.app.modelos.Roles;
+import com.fixestiba.app.repositorios.RolesRepository;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 
+import java.util.List;
+
 @Controller
 public class mainController {
+
+
+
+    @GetMapping("/")
+    public String home() {
+        return "login"; // Devuelve "index.html" desde /templates/
+    }
+
     @GetMapping("/index")
     public String index() {
         return "index"; // Thymeleaf buscará index.html en la carpeta templates
@@ -24,4 +36,8 @@ public class mainController {
     public String login() {
         return "login"; // Thymeleaf buscará login.html en la carpeta templates
     }
+
+
+
+
 }

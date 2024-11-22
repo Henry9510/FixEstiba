@@ -1,7 +1,6 @@
 package com.fixestiba.app.modelos;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,14 +20,17 @@ public class Usuarios {
     private String segundo_nombre;
     private String segundo_apellido;
     private LocalDate fecha_ingreso;
-    private String cargo;
     private int edad;
     private String sexo;
-    private String telefono;
     private String direccion;
     private String email;
-    private int contrasenia;
+    private String usuario;
+    private String contrasenia;
     private String celular;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "roles_id")
+    private Roles rolesid;
 
 
 }

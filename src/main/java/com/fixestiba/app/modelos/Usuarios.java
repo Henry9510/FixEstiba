@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collection;
 
 @Getter
 @Setter
@@ -13,24 +14,40 @@ public class Usuarios {
 
 
     @Id
-    private Long cedula;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
+    private int cedula;
     private String nombre;
     private String apellido;
     private String segundo_nombre;
     private String segundo_apellido;
-    private LocalDate fecha_ingreso;
-    private int edad;
-    private String sexo;
-    private String direccion;
-    private String email;
-    private String usuario;
-    private String contrasenia;
     private String celular;
+    private String username;
+    private String contrasenia;
 
-    @ManyToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "roles_id")
-    private Roles rolesid;
+   @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
+    @JoinTable(
+            name = "usuarios_roles",
+            joinColumns = @JoinColumn(name = "usuario_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "rol_id", referencedColumnName = "id")
+    )
+
+    private Collection<Roles> roles;
+
+    public Usuarios() {
+        this.cedula = cedula;
+        this.nombre = nombre;
+        this.apellido = apellido;
+        this.segundo_nombre = segundo_nombre;
+        this.segundo_apellido = segundo_apellido;
+        this.celular = celular;
+        this.username = username;
+        this.contrasenia = contrasenia;
+        this.roles = roles != null ? roles : new ArrayList<>();
+    }
 
 
 }
+
+

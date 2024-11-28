@@ -7,9 +7,11 @@ import java.util.Optional;
 import com.fixestiba.app.modelos.Usuarios;
 import com.fixestiba.app.repositorios.UsuarioRepository;
 import com.fixestiba.app.serivicios.interfaces.Usuariosint;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.http.ResponseEntity;
 
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.http.HttpStatus;
@@ -28,10 +30,20 @@ public class UsuarioController {
         this.Servicio = Servicio;
     }
 
-    @GetMapping
-    public List<Usuarios> obtenerUsuarios() {
-        return repositorio.findAll();
+    @Autowired
+    private Usuariosint servicio;
+
+    @GetMapping("/login")
+    public String iniciarSesion() {
+        return "login";
     }
+
+    @GetMapping("/")
+    public String verPaginaDeInicio(Model modelo) {
+        modelo.addAttribute("usuarios", servicio.listarUsuarios());
+        return "index";
+    }
+
 
     @GetMapping("/{id}")
     public ResponseEntity<Usuarios> obtenerUsuario(@PathVariable Long id) {
@@ -54,13 +66,9 @@ public class UsuarioController {
                     existingUsuario.setSegundo_nombre(usuarioActualizado.getSegundo_nombre());
                     existingUsuario.setApellido(usuarioActualizado.getApellido());
                     existingUsuario.setSegundo_apellido(usuarioActualizado.getSegundo_apellido());
-                    existingUsuario.setEdad(usuarioActualizado.getEdad());
-                    existingUsuario.setSexo(usuarioActualizado.getSexo());
-                    existingUsuario.setDireccion(usuarioActualizado.getDireccion());
-                    existingUsuario.setEmail(usuarioActualizado.getEmail());
+                    existingUsuario.setUsername(usuarioActualizado.getUsername());
                     existingUsuario.setContrasenia(usuarioActualizado.getContrasenia());
                     existingUsuario.setCelular(usuarioActualizado.getCelular());
-                    existingUsuario.setFecha_ingreso(usuarioActualizado.getFecha_ingreso());
                     return ResponseEntity.ok(repositorio.save(existingUsuario));
                 })
                 .orElse(ResponseEntity.notFound().build());
@@ -75,22 +83,7 @@ public class UsuarioController {
         return ResponseEntity.noContent().build();
     }
 
-    @PatchMapping("/login")
-    public ResponseEntity<?> loginUsuario(@RequestBody Usuarios usuario) {
-        try {
-            Optional<Usuarios> resultado = Servicio.login(usuario.getUsuario(), usuario.getContrasenia());
-            if (resultado.isPresent()) {
-                return ResponseEntity.ok(resultado.get());
-            }
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Usuario o contraseña incorrectos");
-        } catch (NullPointerException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de datos nulos: " + e.getMessage());
-        } catch (DataAccessException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error de acceso a la base de datos: " + e.getMessage());
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Ocurrió un error en el servidor: " + e.getMessage());
-        }
-    }
+
 }
 
 

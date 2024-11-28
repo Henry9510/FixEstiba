@@ -12,9 +12,5 @@ import java.util.Optional;
 @Repository
 public interface UsuarioRepository extends JpaRepository <Usuarios, Long> {
 
-    @Query("SELECT u FROM Usuarios u WHERE u.usuario = :usuario AND u.contrasenia = :contrasenia")
-    Optional<Usuarios> findByUsuarioAndContrasenia(@Param("usuario") String usuario, @Param("contrasenia") String contrasenia);
-
-
-
+    Usuarios findByUsername(String username);
 }

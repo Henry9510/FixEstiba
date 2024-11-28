@@ -1,17 +1,19 @@
 package com.fixestiba.app.serivicios.interfaces;
 
+import com.fixestiba.app.dto.UsuarioRegistroDto;
 import com.fixestiba.app.modelos.Usuarios;
+import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface Usuariosint {
+public interface Usuariosint  extends UserDetailsService {
 
 
-    public List<Usuarios> findAll();
-    public Optional<Usuarios> findById(long id);
-    public Usuarios save(Usuarios usuarios);
-    public void delete(long id);
-    public Optional<Usuarios> login(String usuario, String contrasenia);
+    Usuarios registerUser(Usuarios user);
 
+
+    Usuarios guardar(UsuarioRegistroDto registroDTO);
+
+    List<Usuarios> listarUsuarios();
 }

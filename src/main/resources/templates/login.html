@@ -3,7 +3,6 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/estilos.css">
     <title>Login - FixEstibas</title>
 </head>
 <style>
@@ -147,38 +146,36 @@
     </div>
 </div>
 
-<script src="/app.js"></script> <!-- En la página de login -->
-
 <script>
-    // Manejo del evento de envío del formulario
     document.getElementById('loginForm').addEventListener('submit', async function(event) {
-        event.preventDefault();  // Evita que el formulario se envíe de la manera tradicional
+        event.preventDefault();  // Evita el comportamiento por defecto del formulario
 
         const username = document.getElementById('username').value;
         const password = document.getElementById('password').value;
 
-        // Realizar la petición al backend usando fetch
         try {
-            const response = await fetch('api/usuario/login', {
-                method: 'PATCH',
+            const response = await fetch('http://localhost:8080/auth/login', {
+                method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({
-                    username: username,
-                    password: password
-                })
+                body: JSON.stringify({ username, password })
             });
 
             if (response.ok) {
-                // Si la respuesta es correcta (login exitoso), redirigir a /home
-                window.location.href = "/index";
+                // Login exitoso: redirigir o manejar token
+                const data = await response.json();
+                alert('¡Inicio de sesión exitoso!');
+                window.location.href = "/index"; // Redirigir al dashboard u otra página
             } else {
-                // Si el login falla, mostrar el mensaje de error
+                // Error en las credenciales: mostrar mensaje
                 document.getElementById('error-message').style.display = 'block';
+                document.getElementById('error-message').innerText = 'Credenciales inválidas. Por favor, inténtelo de nuevo.';
             }
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
+            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('error-message').innerText = 'Error de conexión. Intente más tarde.';
         }
     });
 </script>

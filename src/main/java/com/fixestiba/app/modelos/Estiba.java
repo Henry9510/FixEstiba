@@ -22,6 +22,7 @@ public class Estiba {
     private int cantidadTablas;
     private int cantidadTacos;
     private LocalDate fecha;
+    private int mes;
 
 
 

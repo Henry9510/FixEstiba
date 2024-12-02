@@ -94,39 +94,51 @@
     </main>
 <script>
 
-    // Ruta de tu API que devuelve los roles
-    const API_URL = "/api/roles";
+    // Manejo del evento de envío del formulario
+    document.getElementById('registerForm').addEventListener('submit', async function(event) {
+        event.preventDefault();  // Evita que el formulario se envíe de la manera tradicional
 
-    // Función para cargar los roles desde la API
-    async function cargarRoles() {
-        try {
-            // Realiza una solicitud a la API
-            const response = await fetch(API_URL);
-            if (!response.ok) {
-                throw new Error("Error al cargar los roles");
-            }
+        const username = document.getElementById('username').value;
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const confirmPassword = document.getElementById('confirmPassword').value;
 
-            // Convierte la respuesta a JSON
-            const roles = await response.json();
-
-            // Selecciona el elemento <select>
-            const selectRol = document.getElementById("rol");
-
-            // Genera las opciones dinámicamente
-            roles.forEach(rol => {
-                const option = document.createElement("option");
-                option.value = rol.id; // Valor del atributo value
-                option.textContent = rol.nombre; // Texto visible
-                selectRol.appendChild(option); // Añade la opción al <select>
-            });
-        } catch (error) {
-            console.error("Error:", error);
+        // Validación básica de contraseñas
+        if (password !== confirmPassword) {
+            document.getElementById('error-message').textContent = "Las contraseñas no coinciden.";
+            document.getElementById('error-message').style.display = 'block';
+            return;
         }
-    }
 
-    // Llama a la función cuando la página carga
-    document.addEventListener("DOMContentLoaded", cargarRoles);
+        // Realizar la petición al backend usando fetch
+        try {
+            const response = await fetch('http://localhost:8080/api/personas', {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    username: username,
+                    email: email,
+                    password: password
+                })
+            });
 
-</script> <!-- En la página de registro de usuario -->
+            if (response.ok) {
+                // Si el registro es exitoso, redirigir a la página de login
+                window.location.href = "/login";
+            } else {
+                // Si el registro falla, mostrar el mensaje de error
+                const errorData = await response.json();
+                document.getElementById('error-message').textContent = errorData.message || "Hubo un error en el registro.";
+                document.getElementById('error-message').style.display = 'block';
+            }
+        } catch (error) {
+            console.error('Error al registrar usuario:', error);
+            document.getElementById('error-message').textContent = "Hubo un error al registrar usuario.";
+            document.getElementById('error-message').style.display = 'block';
+        }
+    });
+</script>
 </body>
 </html>

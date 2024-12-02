@@ -111,6 +111,13 @@
         text-decoration: underline;
     }
 
+    .error-message {
+        color: #ff0000;
+        font-size: 0.9rem;
+        margin-top: 0.5rem;
+        display: none;
+    }
+
     @media (max-width: 768px) {
         .login-container {
             padding: 1.5rem;
@@ -139,43 +146,39 @@
         <input type="password" id="password" name="password" required>
 
         <button type="submit">Ingresar</button>
+        <span id="error-message" class="error-message">Usuario o contraseña incorrectos. Por favor, inténtelo de nuevo.</span>
     </form>
-
-    <div class="register-link">
-        <p>¿No tienes una cuenta? <a href="/registro">Regístrate aquí</a></p>
-    </div>
 </div>
 
 <script>
     document.getElementById('loginForm').addEventListener('submit', async function(event) {
         event.preventDefault();  // Evita el comportamiento por defecto del formulario
 
-        const username = document.getElementById('username').value;
-        const password = document.getElementById('password').value;
+        const usuario = document.getElementById('username').value;
+        const contrasena = document.getElementById('password').value;
+
+        const errorMessage = document.getElementById('error-message');
+        errorMessage.style.display = 'none'; // Ocultar mensaje de error antes de intentar
 
         try {
-            const response = await fetch('http://localhost:8080/auth/login', {
-                method: 'POST',
+            const response = await fetch('http://localhost:8080/api/personas', {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username, password })
+                body: JSON.stringify({ usuario, contrasena })
             });
 
             if (response.ok) {
-                // Login exitoso: redirigir o manejar token
-                const data = await response.json();
-                alert('¡Inicio de sesión exitoso!');
                 window.location.href = "/index"; // Redirigir al dashboard u otra página
             } else {
-                // Error en las credenciales: mostrar mensaje
-                document.getElementById('error-message').style.display = 'block';
-                document.getElementById('error-message').innerText = 'Credenciales inválidas. Por favor, inténtelo de nuevo.';
+                // Mostrar mensaje de error
+                errorMessage.style.display = 'block';
             }
         } catch (error) {
             console.error('Error al iniciar sesión:', error);
-            document.getElementById('error-message').style.display = 'block';
-            document.getElementById('error-message').innerText = 'Error de conexión. Intente más tarde.';
+            errorMessage.innerText = 'Error de conexión. Intente más tarde.';
+            errorMessage.style.display = 'block';
         }
     });
 </script>

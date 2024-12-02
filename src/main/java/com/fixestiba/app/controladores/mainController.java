@@ -1,6 +1,7 @@
 package com.fixestiba.app.controladores;
 
 
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Controller;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +40,14 @@ public class mainController {
     @GetMapping("/prueba")
     public String test() {
         return "prueba"; // Thymeleaf buscará login.html en la carpeta templates
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request) {
+        // Invalidar la sesión
+        request.getSession().invalidate();
+        // Redirigir al login
+        return "redirect:/login";
     }
 
 }

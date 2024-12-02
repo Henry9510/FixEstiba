@@ -42,10 +42,6 @@ async function guardarEstiba() {
 
         const responseData = await response.json();
         console.log("Datos guardados con éxito:", responseData);
-
-        // Mostrar mensaje de éxito
-        alert("La estiba se ha registrado correctamente.");
-
         // Limpiar campos del formulario
         document.getElementById("cantidadTablas").value = "";
         document.getElementById("cantidadTacos").value = "";

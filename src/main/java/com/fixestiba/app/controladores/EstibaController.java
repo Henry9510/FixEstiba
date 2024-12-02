@@ -1,6 +1,8 @@
 package com.fixestiba.app.controladores;
 
+import com.fixestiba.app.serivicios.Implementacion.EstibaService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -13,6 +15,8 @@ import com.fixestiba.app.modelos.Estiba;
 import com.fixestiba.app.repositorios.EstibaRepository;
 
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @CrossOrigin(origins = "*")
@@ -41,4 +45,13 @@ public class EstibaController {
         return new int[]{totalTablas, totalTacos};
     }
 
+    @Autowired
+    private EstibaService estibaService;
+
+    @GetMapping("/totales/ultimosTresMeses")
+    public ResponseEntity<List<Map<String, Object>>> obtenerTotalesUltimosTresMeses() {
+        List<Map<String, Object>> totales = estibaService.obtenerTotalesUltimosTresMeses();
+        return ResponseEntity.ok(totales);
+    }
 }
+

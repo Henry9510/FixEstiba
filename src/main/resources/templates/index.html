@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/estilos.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
     <title></title>
 </head>
 <style>
@@ -129,6 +131,22 @@
         padding: 10px;
     }
 
+    .main-container {
+        display: flex;
+        gap: 20px;
+        margin: 20px;
+    }
+
+    .daily-section,
+    .monthly-section {
+        flex: 1;
+    }
+
+    .card {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        margin-bottom: 20px;
+    }
+
 </style>
 <body>
 <header>
@@ -141,55 +159,156 @@
             <li><a href="/index">Inicio</a></li>
             <li><a href="/estibas">Desarme de Estibas</a></li>
             <li><a href="/usuarios">Nuevo Usuario</a></li>
-            <li><a href="">Cerrar sesión</a></li>
+            <li><a href="#" onclick="confirmarCerrarSesion()">Cerrar sesión</a></li>
         </ul>
     </nav>
 </header>
 
-<div class="container mt-5">
-    <div class="row">
-        <!-- Cuadro para Tablas Grande -->
-        <div class="col-md-3">
-            <div class="card text-white bg-primary mb-3">
-                <div class="card-header">Tablas Grandes</div>
-                <div class="card-body">
-                    <h5 class="card-title" id="totalesGrandeTablas">Cargando...</h5>
+<div class="main-container d-flex">
+    <!-- Desarmes Diarios -->
+    <div class="daily-section flex-fill">
+        <h2>Desarmes Diarios</h2>
+        <div class="row">
+            <!-- Reutiliza los cuadros existentes -->
+            <div class="col-md-3">
+                <div class="card text-white bg-primary mb-3">
+                    <div class="card-header">Tablas Grandes</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="totalesGrandeTablas">Cargando...</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-success mb-3">
+                    <div class="card-header">Tablas Medianas</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="totalesMedianaTablas">Cargando...</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-warning mb-3">
+                    <div class="card-header">Tablas Pequeñas</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="totalesPequenaTablas">Cargando...</h5>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="card text-white bg-danger mb-3">
+                    <div class="card-header">Total Tacos</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="totalesTacos">Cargando...</h5>
+                    </div>
                 </div>
             </div>
         </div>
-        <!-- Cuadro para Tablas Medianas -->
-        <div class="col-md-3"   >
-            <div class="card text-white bg-success mb-3">
-                <div class="card-header">Tablas Medianas</div>
-                <div class="card-body">
-                    <h5 class="card-title" id="totalesMedianaTablas">Cargando...</h5>
+    </div>
+
+    <!-- Desarmes Últimos Tres Meses -->
+    <div class="monthly-section flex-fill">
+        <h2>Desarmes Últimos 3 Meses</h2>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header">Mes 1</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="mes1Totales">Cargando...</h5>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Cuadro para Tablas Pequeñas -->
-        <div class="col-md-3">
-            <div class="card text-white bg-warning mb-3">
-                <div class="card-header">Tablas Pequeñas</div>
-                <div class="card-body">
-                    <h5 class="card-title" id="totalesPequenaTablas">Cargando...</h5>
+            <div class="col-md-12">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header">Mes 2</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="mes2Totales">Cargando...</h5>
+                    </div>
                 </div>
             </div>
-        </div>
-        <!-- Cuadro para Total de Tacos -->
-        <div class="col-md-3">
-            <div class="card text-white bg-danger mb-3">
-                <div class="card-header">Total Tacos</div>
-                <div class="card-body">
-                    <h5 class="card-title" id="totalesTacos">Cargando...</h5>
+            <div class="col-md-12">
+                <div class="card text-white bg-info mb-3">
+                    <div class="card-header">Mes 3</div>
+                    <div class="card-body">
+                        <h5 class="card-title" id="mes3Totales">Cargando...</h5>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
 
+<script>
+    function obtenerTotalesDelDia() {
+        // URLs para cada tipo de estiba
+        const urls = {
+            pequena: "http://localhost:8080/api/estibas/totales/pequeña",
+            mediana: "http://localhost:8080/api/estibas/totales/mediana",
+            grande: "http://localhost:8080/api/estibas/totales/grande"
+        };
 
+        // Variables para acumular el total de tacos
+        let totalTacos = 0;
 
+        // Función para procesar la respuesta de cada tipo de estiba
+        function procesarRespuesta(tipo, data) {
+            document.getElementById(`totales${tipo}Tablas`).innerText = `${data[0]} Tablas`;
+            totalTacos += data[1]; // Acumular tacos
+            document.getElementById("totalesTacos").innerText = `${totalTacos} Tacos`; // Actualizar tacos totales
+        }
 
-<script src="/estibasDia.js"></script> <!-- En la página de login -->
+        // Solicitar y procesar datos para cada tipo de estiba
+        Object.keys(urls).forEach(tipo => {
+            fetch(urls[tipo])
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error(`Error en la solicitud: ${response.status}`);
+                    }
+                    return response.json(); // Convertir respuesta a JSON
+                })
+                .then(data => procesarRespuesta(tipo.charAt(0).toUpperCase() + tipo.slice(1), data)) // Actualizar dashboard
+                .catch(error => {
+                    console.error(`Error al obtener los datos de ${tipo}:`, error);
+                    document.getElementById(`totales${tipo}Tablas`).innerText = "Error al cargar";
+                });
+        });
+    }
+
+    // Llamar a la función al cargar la página
+    document.addEventListener("DOMContentLoaded", obtenerTotalesDelDia);
+
+    function obtenerTotalesUltimosTresMeses() {
+        const url = "http://localhost:8080/api/estibas/totales/ultimosTresMeses";
+
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Error en la solicitud: ${response.status}`);
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.length >= 3) {
+                    document.getElementById("mes1Totales").innerText = `${data[0].mes}: ${data[0].tablas} Tablas, ${data[0].tacos} Tacos`;
+                    document.getElementById("mes2Totales").innerText = `${data[1].mes}: ${data[1].tablas} Tablas, ${data[1].tacos} Tacos`;
+                    document.getElementById("mes3Totales").innerText = `${data[2].mes}: ${data[2].tablas} Tablas, ${data[2].tacos} Tacos`;
+
+                } else {
+                    console.error("No hay suficientes datos para mostrar los últimos tres meses.");
+                }
+            })
+            .catch(error => {
+                console.error("Error al obtener los datos de los últimos tres meses:", error);
+            });
+    }
+
+    // Llamar a la función al cargar la página
+    function confirmarCerrarSesion() {
+        const confirmacion = confirm("¿Estás seguro de que quieres cerrar sesión?");
+        if (confirmacion) {
+            window.location.href = "/logout"; // Redirige al logout si el usuario confirma
+        }
+    }
+    document.addEventListener("DOMContentLoaded", obtenerTotalesUltimosTresMeses);
+</script>
 </body>
 </html>

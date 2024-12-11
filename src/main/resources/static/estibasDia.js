@@ -1,7 +1,7 @@
 function obtenerTotalesDelDia() {
     // URLs para cada tipo de estiba
     const urls = {
-        pequena: "http://localhost:8080/api/estibas/totales/pequeña",
+        pequena: "http://localhost:8080/api/estibas/totales/pequena",
         mediana: "http://localhost:8080/api/estibas/totales/mediana",
         grande: "http://localhost:8080/api/estibas/totales/grande"
     };

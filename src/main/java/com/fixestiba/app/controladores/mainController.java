@@ -50,4 +50,9 @@ public class mainController {
         return "redirect:/login";
     }
 
+    @GetMapping("/arme")
+    public String arme() {
+        return "arme";
+    }
+
 }

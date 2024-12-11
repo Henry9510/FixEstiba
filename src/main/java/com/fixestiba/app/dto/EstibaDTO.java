@@ -16,6 +16,4 @@ public class EstibaDTO {
     private int cantidadTacos;
     private String tipoEstiba;
     private int mes;
-
-
 }

@@ -23,7 +23,8 @@ async function guardarEstiba() {
         fecha:fecha,
         cantidadTablas: parseInt(cantidadTablas),
         cantidadTacos: parseInt(cantidadTacos),
-        tipoEstiba: tipoEstibaSeleccionado
+        tipoEstiba: tipoEstibaSeleccionado,
+        desarme: true
     };
 
     try {
@@ -52,5 +53,11 @@ async function guardarEstiba() {
     } catch (error) {
         console.error("Error al guardar la estiba:", error);
         alert("Hubo un error al guardar la estiba. Inténtelo nuevamente.");
+    }
+}
+function confirmarCerrarSesion() {
+    const confirmacion = confirm("¿Estás seguro de que quieres cerrar sesión?");
+    if (confirmacion) {
+        window.location.href = "/logout";
     }
 }

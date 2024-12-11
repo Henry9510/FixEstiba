@@ -1,0 +1,159 @@
+    <!DOCTYPE html>
+    <html xmlns:th="http://www.thymeleaf.org" lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="/estilos.css">
+        <title>Arme de Estibas - FixEstibas</title>
+    </head>
+    <body>
+    <header>
+        <div class="logo">
+            <img src="/logo.png" style="width: 100px; padding: 0">
+            <h1>FixEstibas</h1>
+        </div>
+
+        <nav>
+            <ul>
+                <li><a href="/index">Inicio</a></li>
+                <li><a href="/estibas">Desarme de Estibas</a></li>
+                <li><a href="/arme">Arme de Estibas</a></li>
+                <li><a href="/usuarios">Nuevo Usuario</a></li>
+                <li><a href="#" onclick="confirmarCerrarSesion()">Cerrar sesión</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <div class="main-content">
+        <h2>Seleccione el Tipo de Estiba para Arme</h2>
+        <form id="estibaForm" onsubmit="guardarEstiba(); return false;">
+            <label id="tipoEstibaSeleccionada">Tipo de Estiba Seleccionada:</label><br>
+
+            <div class="estibas-seleccion">
+                <div class="estiba" onclick="seleccionarEstiba('Grande')">
+                    <img src="/estiba.jpg" style="width: 200px;">
+                    <p>GRANDE 1.30m x 1.30m</p>
+                </div>
+                <div class="estiba" onclick="seleccionarEstiba('Mediana')">
+                    <img src="/estiba.jpg" style="width: 200px;">
+                    <p>MEDIANA 1.05m x 1.05m</p>
+                </div>
+                <div class="estiba" onclick="seleccionarEstiba('Pequena')">
+                    <img src="/estiba.jpg" style="width: 200px;">
+                    <p>PEQUEÑA 90cm x 90cm</p>
+                </div>
+            </div>
+
+            <div id="inventarioDisponible" style="visibility: hidden">
+                <p id="totalTablasGrandes">Tablas Grandes Disponibles: 0</p>
+                <p id="totalTablasMedianas">Tablas Medianas Disponibles: 0</p>
+                <p id="totalTablasPequenas">Tablas Pequeñas Disponibles: 0</p>
+                <p id="totalTacos">Tacos Disponibles: 0</p>
+            </div>
+
+            <label>Fecha:</label>
+            <input type="date" id="fecha" required><br>
+
+            <label>Cantidad de Tablas:</label>
+            <input type="number" id="cantidadTablas" required><br>
+
+            <label>Cantidad de Tacos:</label>
+            <input type="number" id="cantidadTacos" required><br>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </div>
+
+    <script>
+        // Función para seleccionar el tipo de estiba
+        function seleccionarEstiba(tipo) {
+            document.getElementById("tipoEstibaSeleccionada").innerText = `Tipo de Estiba Seleccionada: ${tipo}`;
+
+            // Actualizar el inventario disponible
+            actualizarInventario(tipo);
+        }
+
+        // Función para actualizar el inventario disponible
+        function actualizarInventario(tipo) {
+            fetch(`http://localhost:8080/api/estibas/stock/${tipo.toLowerCase()}`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById("totalTablasGrandes").innerText = `Tablas Grandes Disponibles: ${data.tablas || 0}`;
+                    document.getElementById("totalTablasMedianas").innerText = `Tablas Medianas Disponibles: ${data.tablas || 0}`;
+                    document.getElementById("totalTablasPequenas").innerText = `Tablas Pequeñas Disponibles: ${data.tablas || 0}`;
+                    document.getElementById("totalTacos").innerText = `Tacos Disponibles: ${data.tacos || 0}`;
+                })
+                .catch(error => {
+                    console.error('Error al obtener el inventario:', error);
+                });
+        }
+
+        function guardarEstiba() {
+            const tipoEstiba = document.getElementById("tipoEstibaSeleccionada").innerText.split(": ")[1];
+            const fecha = document.getElementById("fecha").value;
+            let cantidadTablas = document.getElementById("cantidadTablas").value;
+            let cantidadTacos = document.getElementById("cantidadTacos").value;
+
+            // Verificar si se seleccionó un tipo de estiba
+            if (!tipoEstiba || tipoEstiba === "Tipo de Estiba Seleccionada:") {
+                alert("Por favor, selecciona un tipo de estiba.");
+                return;
+            }
+
+            // Validar la cantidad de tablas y tacos
+            if (!cantidadTablas || !cantidadTacos) {
+                alert("Por favor, ingresa la cantidad de tablas y tacos.");
+                return;
+            }
+
+            // Convertir las cantidades a números y hacerlas negativas
+            cantidadTablas = -Math.abs(cantidadTablas);
+            cantidadTacos = -Math.abs(cantidadTacos);
+
+            // Crear el objeto de la estiba
+            const estibaData = {
+                tipoEstiba: tipoEstiba,
+                fecha: fecha,
+                cantidadTablas: cantidadTablas,
+                cantidadTacos: cantidadTacos,
+                desarme: false // O si es un desarme, se puede modificar
+            };
+
+            // Hacer la solicitud para guardar la estiba
+            fetch('http://localhost:8080/api/estibas/crear', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(estibaData)
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('No se pudo guardar la estiba');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    alert('Estiba guardada con éxito.');
+                    // Resetear el formulario o hacer algún otro manejo si es necesario
+                    document.getElementById("estibaForm").reset();
+                    document.getElementById("tipoEstibaSeleccionada").innerText = "Tipo de Estiba Seleccionada:";
+                    actualizarInventario(tipoEstiba);  // Actualizar inventario
+                })
+                .catch(error => {
+                    alert('Error al guardar la estiba: ' + error.message);
+                });
+        }
+
+        function confirmarCerrarSesion() {
+            const confirmacion = confirm("¿Estás seguro de que quieres cerrar sesión?");
+            if (confirmacion) {
+                window.location.href = "/logout";
+            }
+        }
+
+
+    </script>
+
+    </body>
+    </html>
